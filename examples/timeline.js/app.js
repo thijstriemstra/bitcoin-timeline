@@ -1,3 +1,20 @@
+var getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status == 200) {
+        resolve(xhr.response);
+      } else {
+        reject(status);
+      }
+    };
+    xhr.send();
+  });
+};
+
 function handleFileSelect()
 {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -29,8 +46,10 @@ function handleFileSelect()
 function receivedText() {
     var result = JSON.parse(fr.result);
     console.log(result);
-    //document.getElementById('editor').appendChild(
-    //document.createTextNode(fr.result))
+
+    // XXX: load directly from bitstamp
+    //var link = 'https://bitstamp.net/etc/test.json'
+    //var result= JSON.parse(link);
 
     // two arguments: the id of the Timeline container (no '#')
     // and the JSON object or an instance of TL.TimelineConfig created from
