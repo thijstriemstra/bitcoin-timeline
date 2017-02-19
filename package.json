@@ -21,6 +21,7 @@
   "author": "Collab",
   "license": "MIT",
   "dependencies": {
+    "c3": "^0.4.11",
     "papaparse": "^4.1.4"
   }
 }
