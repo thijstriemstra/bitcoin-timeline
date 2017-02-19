@@ -43,16 +43,77 @@ function handleFileSelect()
     }
 }
 
+let example = {
+        "title": {
+            "media": {
+              "url": "//blog.cex.io/wp-content/uploads/2015/03/market-price.png",
+              "caption": "B-Boys money makin'",
+              "credit": "flickr/<a href='http://yo.mom'>@thijstriemstra @ikbensiep</a>"
+            },
+            "text": {
+              "headline": "I know what you deposited last summer<br/> 2013 - 2016",
+              "text": "<p>Bitch I'm a bus'.</p>"
+            }
+        },
+        "events": []
+    }
+
+
+function parseCSV(input) {
+    //
+    Papa.parse(input, {
+        worker: true,
+        header: true,
+        step: function(results) {
+            if (results.data[0].Type !== 'Market') {
+                
+                var item = results.data[0];
+                
+                //console.info(item);
+                
+                var timestamp = Date.parse(item.Datetime.replace(".", ""));
+                var now = new Date(timestamp);
+                var year = now.getFullYear().toString();
+                var month = (now.getMonth() + 1).toString();
+                var day = now.getDate().toString();
+
+                var event = {
+                        "start_date": {
+                            "month": month, 
+                            "day": day,
+                            "year": year
+                        },
+                        "text": {
+                            "headline": item.Type + ': ' + item.Amount,
+                            "text": "<span>" + item.Account + "</span>"
+                        }
+                };
+                
+                example.events.push(event);
+                
+            }
+        },
+        complete: function(results) {
+            console.log('completed loading CSV.');
+            
+            // two arguments: the id of the Timeline container (no '#')
+            // and the JSON object or an instance of TL.TimelineConfig created from
+            // a suitable JSON object
+            window.timeline = new TL.Timeline('timeline-embed', example);
+        }
+    });
+}
+
 function receivedText() {
-    var result = JSON.parse(fr.result);
-    console.log(result);
+
+    parseCSV(fr.result);
+    
+    console.log(example);
 
     // XXX: load directly from bitstamp
     //var link = 'https://bitstamp.net/etc/test.json'
     //var result= JSON.parse(link);
-
-    // two arguments: the id of the Timeline container (no '#')
-    // and the JSON object or an instance of TL.TimelineConfig created from
-    // a suitable JSON object
-    window.timeline = new TL.Timeline('timeline-embed', result);
+    
+    // var example = JSON.parse(fr.result);
+    // console.log(example);
 }

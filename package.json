@@ -19,5 +19,8 @@
     "json"
   ],
   "author": "Collab",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "papaparse": "^4.1.4"
+  }
 }

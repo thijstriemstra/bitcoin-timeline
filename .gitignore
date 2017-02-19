@@ -1,3 +1,6 @@
 .DS_Store
 *.log
 data
+.project
+node_modules
+bower_components
