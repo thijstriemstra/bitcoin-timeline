@@ -1,0 +1,71 @@
+TODO
+====
+
+- upload various bitstamp json files
+- various events parsed: withdrawal, deposit
+- download various bitstamp json files directly (when
+  user is logged in)
+- parse JSON files
+- store parsed data in database (see
+  https://github.com/localForage/localForage)
+- allow user to add labels/stories to events
+- load data into timeline object
+- overlay timeline on top of bitcoin price chart
+
+Charts
+^^^^^^
+
+- http://c3js.org/examples.html
+
+CoinDesk Bitcoin Price Index API
+--------------------------------
+
+uses BPI (bitcoin price index, see http://www.coindesk.com/price/).
+
+current price in usd/gbp/euro: http(s)://api.coindesk.com/v1/bpi/currentprice.json
+historical data: http(s)://api.coindesk.com/v1/bpi/historical/close.json
+
+By default, this will return the previous 31 days' worth of data. This endpoint accepts the following optional parameters:
+
+    ?index=[USD/CNY]The index to return data for. Defaults to USD.
+    ?currency=<VALUE>The currency to return the data in, specified in ISO 4217 format. Defaults to USD.
+    ?start=<VALUE>&end=<VALUE> Allows data to be returned for a specific date range. Must be listed as a pair of start and end parameters, with dates supplied in the YYYY-MM-DD format, e.g. 2013-09-01 for September 1st, 2013.
+    ?for=yesterdaySpecifying this will return a single value for the previous day. Overrides the start/end parameter.
+
+
+E.g.:
+
+  http(s)://api.coindesk.com/v1/bpi/historical/close.json?start=2013-09-01&end=2013-09-05
+
+Returns:
+
+  {"bpi":{"2013-09-01":128.2597,"2013-09-02":127.3648,"2013-09-03":127.5915,"2013-09-04":120.5738,"2013-09-05":120.5333},"disclaimer":"This data was produced from the CoinDesk Bitcoin Price Index. BPI value data returned as USD.","time":{"updated":"Sep 6, 2013 00:03:00 UTC","updatedISO":"2013-09-06T00:03:00+00:00"}}
+
+Bitstamp HTTP API
+-----------------
+
+See https://www.bitstamp.net/api/
+
+- ticker for https://www.bitstamp.net/api/v2/ticker/btcusd/
+- https://www.bitstamp.net/api/v2/ticker/btceur/
+
+Example: {"high": "1068.99", "last": "1050.25", "timestamp": "1487468265", "bid": "1049.45", "vwap": "1060.35", "volume": "4512.87792270", "low": "1046.14", "ask": "1051.30", "open": "1056.40"}
+
+bitcoin charts historical data
+------------------------------
+
+(Don't query more often than once every 15 minutes!)
+
+Trade data is available as CSV, delayed by approx. 15 minutes. It will return the 2000 most recent trades.
+
+http://api.bitcoincharts.com/v1/trades.csv?symbol=SYMBOL[&start=UNIXTIME]
+
+returns CSV:
+
+unixtime,price,amount
+
+You can use the start parameter to specify an earlier unix timestamp in order to retrieve older data.
+
+See http://api.bitcoincharts.com/v1/csv/ for archive.
+
+Bitstamp CSV (75MB gzipped): http://api.bitcoincharts.com/v1/csv/bitstampUSD.csv.gz
