@@ -1,0 +1,23 @@
+{
+  "name": "bitcoin-timeline",
+  "version": "0.0.1",
+  "description": "Create interactive timeline for your personal bitcoin history.",
+  "main": "src/js/bitcoin.timeline.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "timeline",
+    "bitcoin",
+    "bitstamp",
+    "history",
+    "withdrawal",
+    "deposit",
+    "json"
+  ],
+  "author": "Collab",
+  "license": "MIT"
+}
