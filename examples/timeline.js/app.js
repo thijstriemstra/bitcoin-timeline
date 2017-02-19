@@ -64,34 +64,30 @@ function parseCSV(input) {
     Papa.parse(input, {
         worker: true,
         header: true,
-        step: function(results) {
-            if (results.data[0].Type !== 'Market') {
-                
-                var item = results.data[0];
-                
-                //console.info(item);
-                
-                var timestamp = Date.parse(item.Datetime.replace(".", ""));
-                var now = new Date(timestamp);
-                var year = now.getFullYear().toString();
-                var month = (now.getMonth() + 1).toString();
-                var day = now.getDate().toString();
+        step: function(results) {            
+            var item = results.data[0];
+            
+            //console.info(item);
+            
+            var timestamp = Date.parse(item.Datetime.replace(".", ""));
+            var now = new Date(timestamp);
+            var year = now.getFullYear().toString();
+            var month = (now.getMonth() + 1).toString();
+            var day = now.getDate().toString();
 
-                var event = {
-                        "start_date": {
-                            "month": month, 
-                            "day": day,
-                            "year": year
-                        },
-                        "text": {
-                            "headline": item.Type + ': ' + item.Amount,
-                            "text": "<span>" + item.Account + "</span>"
-                        }
-                };
-                
-                example.events.push(event);
-                
-            }
+            var event = {
+                    "start_date": {
+                        "month": month, 
+                        "day": day,
+                        "year": year
+                    },
+                    "text": {
+                        "headline": item.Type + ': ' + item.Amount,
+                        "text": "<span data-value='"+ item.Value +"'>" + item.Account + "</span>"
+                    }
+            };
+            
+            example.events.push(event);
         },
         complete: function(results) {
             console.log('completed loading CSV.');
