@@ -50,12 +50,27 @@ var example = {
         data: []
 };
 
-function processHistory(data) {
+function parseCSVDone(data) {
     console.log("data: ", data);
 
+    
+}
+
+function parseBPI(data) {
+    
+    //parseCSV(fr.result);
+        
     var ctx = document.getElementById("myChart");
     
+    //console.log(data);
     
+    for (var i in data.bpi) {
+        // console.log(i, data.bpi[i])
+        example.labels.push(i);
+        example.data.push(data.bpi[i]);
+    }
+
+    // build graph
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -75,7 +90,13 @@ function processHistory(data) {
             }
         }
     });
+    
 }
+
+
+// 1: load csv
+// 2: load bpi
+// 3: chart
 
 function parseCSV(input) {
     //
@@ -85,7 +106,7 @@ function parseCSV(input) {
         step: function(results) {            
             var item = results.data[0];
             
-            console.info(item);
+            // console.info(item);
             
             var timestamp = Date.parse(item.Datetime.replace(".", ""));
             var now = new Date(timestamp);
@@ -104,7 +125,7 @@ function parseCSV(input) {
         
         complete: function(results) {
             console.log('completed loading CSV.');
-            processHistory(example);
+            parseCSVDone(example);
         }
     });
 }
@@ -113,7 +134,10 @@ function receivedText() {
 
     var bpi = getJSON('../bpi.json').then(function(result){
         console.log("BPI: ", result);
-        parseCSV(fr.result, bpi);
+        
+        parseBPI(result);
+        
+        
         
     });
     
