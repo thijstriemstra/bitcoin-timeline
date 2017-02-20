@@ -44,25 +44,38 @@ function handleFileSelect()
 }
 
 var example = {
-        events: []
+        data : ["BTC value (USD)"],
+        dates : ["x"]
 };
 
 function processHistory(data) {
 
     console.log("data: ", data);
 
-    var values = data.forEach( function (item) {
-        return item.Value;
-    });
+    var items = [];
     
-    console.log(values);
+    for (var i=0; i<data.length; i++) {
+        
+    }
+    
     
     var chart = c3.generate({
         bindto: '#chart',
+       
         data: {
-          columns: [
-            ['data1', 30, 200, 100, 400, 150, 250]
-          ]
+          columns: [data.data, data.dates],
+          x: 'x',
+        },
+        axis : {
+            x : {
+                type : 'timeseries',
+                label: 'yo yo',
+                position: 'inner-left',
+                tick: {
+                    fit: true,
+                    format: "%e %b %y"
+                }
+            }
         }
     });
 
@@ -77,27 +90,21 @@ function parseCSV(input) {
         step: function(results) {            
             var item = results.data[0];
             
-            //console.info(item);
+            console.info(item);
             
             var timestamp = Date.parse(item.Datetime.replace(".", ""));
             var now = new Date(timestamp);
             var year = now.getFullYear().toString();
             var month = (now.getMonth() + 1).toString();
             var day = now.getDate().toString();
-
-            var event = {
-                    "start_date": {
-                        "month": month, 
-                        "day": day,
-                        "year": year
-                    },
-                    "text": {
-                        "headline": item.Type + ': ' + item.Amount,
-                        "text": "<span data-value='"+ item.Value +"'>" + item.Account + "</span>"
-                    }
-            };
+            var datestring = year + "-" + month + "-" + day;
             
-            example.events.push(event);
+            var value = item.Value.replace(" USD", "");
+
+            if (value) {
+                example.data.push(value);
+                example.dates.push(datestring);
+            } 
         },
         
         complete: function(results) {
