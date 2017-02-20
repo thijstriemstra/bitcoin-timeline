@@ -46,7 +46,7 @@ function handleFileSelect()
 
 var example = {
         labels : [],
-        label : "BTC Transexual Values",
+        label : "Bitstamp BPI in USD",
         data: []
 };
 
