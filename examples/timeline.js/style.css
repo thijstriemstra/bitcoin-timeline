@@ -1,0 +1,38 @@
+.tl-timemarker .tl-timemarker-content-container {
+    background: #4fc3f7;
+}
+
+.tl-timemarker[id^="deposit"] .tl-timemarker-content-container {
+	background: #ef5350;
+}
+
+.tl-timemarker[id^="withdrawal"] .tl-timemarker-content-container {
+	background: #4db6ac;
+}
+
+div[id^=withdrawal] {
+    background: #4db6ac;
+    color: white;
+}
+
+div[id^=deposit] {
+    background: #ef5350;
+    color: white;
+}
+
+div[id^=market] {
+	background: #4fc3f7;
+}
+
+.tl-text p,
+div[id^=market] .tl-text-content-container > *,
+div[id^=withdrawal] .tl-text-content-container > *,
+div[id^=deposit] .tl-text-content-container > * {
+	color: white !important;
+}
+
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p.tl-headline-fadeout::after, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline.tl-headline-fadeout::after {
+    display: none;	
+}
+
+
