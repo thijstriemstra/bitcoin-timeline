@@ -25,5 +25,9 @@
     "chart.js": "^2.5.0",
     "papaparse": "^4.1.4",
     "underscore": "^1.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thijstriemstra/bitcoin-timeline.git"
   }
 }
