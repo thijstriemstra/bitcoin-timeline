@@ -28,6 +28,10 @@ var Transaction = Backbone.Model.extend({
         return this.get('type') == 'Withdrawal';
     },
     
+    isMarket: function() {
+        return this.get('type') == 'Market';
+    },
+    
     isDeposit: function() {
         return this.get('type') == 'Deposit';
     }
@@ -108,6 +112,11 @@ var Transactions = Backbone.Collection.extend({
     total_bought: function()
     {
         return this.total_by('amount', 'buy');
+    },
+    
+    total_bought_current_value: function()
+    {
+        return this.total_bought() * this.currentPrice.rate;
     },
 
     total_fees: function()

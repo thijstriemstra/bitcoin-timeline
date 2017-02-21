@@ -37,15 +37,7 @@ var bpi_chart_data = {
 };
 
 
-var transactions_chart_data = {
-    labels : [],
-    label : "Market Buy",
-    data: [],
-    rawData: []
-};
-
-function buildChart(data) {
-    
+function buildChart(buychart, withdrawal_chart) {
     var ctx = document.getElementById("myChart");
     // build graph
     myChart = new Chart(ctx, {
@@ -70,12 +62,8 @@ function buildChart(data) {
                pointHoverRadius: 5,
                pointRadius: 1,
             },
-            {
-               type: 'bar',
-               label: transactions_chart_data.label,
-               data: transactions_chart_data.data,
-               backgroundColor: '#1de9b6',
-           }]
+            buychart, withdrawal_chart
+            ]
          },
          options: {
              title: {
@@ -111,13 +99,6 @@ function parseBPI(data) {
 
 
 function parseCSV(input) {
-    transactions_chart_data.labels = bpi_chart_data.labels.slice();
-    transactions_chart_data.data = _.range(bpi_chart_data.data.length).map(function ()
-    {
-        return 0;
-    });
-
-    //
     Papa.parse(input, {
         worker: true,
         header: true,
@@ -138,7 +119,6 @@ function parseCSV(input) {
                 subType: item['Sub Type'],
                 value: parseFloat(item.Value.replace(" USD", "")),
                 amount: parseFloat(item.Amount.replace(" BTC", "")),
-                // Deposit/Market/Withdrawal
                 type: item.Type,
                 accountName: item.Account,
                 rate: parseFloat(item.Rate.replace(" USD", "")),
@@ -147,31 +127,63 @@ function parseCSV(input) {
                 datestring: year + "-" + pad(month) + "-" + pad(day)
             });
 
-            if (transaction.get('value') && transaction.isBuy()) {
-                // label, e.g. 2014-07-04
-                // find 
-                var theDate = transaction.get('datestring');
-                var index = _.indexOf(transactions_chart_data.labels, theDate);
-                if (index != -1)
-                {
-                    transactions_chart_data.data[index] = transaction.get('value');
-                }
-                
-            }
-
-            transactions_chart_data.rawData.push(transaction);
-            
             transactions.add(transaction);
         },
 
         complete: function(results) {
             console.log('Completed loading transactions CSV.');
-
             console.log('current price (USD)', transactions.currentPrice.rate);
+
+            // prepare data
+            var buy_chart = {
+                type: 'bar',
+                label : 'Market Buy',
+                backgroundColor: '#1de9b6',
+                data: _.range(bpi_chart_data.data.length).map(function()
+                {
+                    // generate array with 0 values
+                    return 0;
+                })
+            };
+            _.each(transactions.buyOnly(), function(item)
+            {
+                // find label, e.g. 2014-07-04
+                var theDate = item.get('datestring');
+                var index = _.indexOf(bpi_chart_data.labels, theDate);
+                if (index != -1)
+                {
+                    // increment buy total for day
+                    buy_chart.data[index] = buy_chart.data[index] + item.get('value');
+                }
+            });
+
+            // prepare data
+            var withdrawal_chart = {
+                type: 'bar',
+                label : 'Withdrawal',
+                backgroundColor: '#ff9800',
+                data: _.range(bpi_chart_data.data.length).map(function()
+                {
+                    // generate array with 0 values
+                    return 0;
+                })
+            };
+            _.each(transactions.withdrawalOnly(), function(item)
+            {
+                // find label, e.g. 2014-07-04
+                var theDate = item.get('datestring');
+                var index = _.indexOf(bpi_chart_data.labels, theDate);
+                if (index != -1)
+                {
+                    // increment withdrawal total for day
+                    withdrawal_chart.data[index] = withdrawal_chart.data[index] + item.get('amount');
+                }
+            });
 
             // Market (Buy)
             var total_spent = transactions.total_spent();
             var total_bought = transactions.total_bought();
+            var total_bought_value = transactions.total_bought_current_value();
             var total_fees = transactions.total_fees();
 
             var lowest_rate = transactions.lowest_rate();
@@ -179,7 +191,7 @@ function parseCSV(input) {
 
             console.log('total spent (USD)', total_spent);
             console.log('total bought (BTC)', total_bought);
-            console.log('total bought value with current price (USD)', transactions.currentPrice.rate * total_bought);
+            console.log('total bought value with current price (USD)', total_bought_value);
             console.log('total fees (USD)', total_fees);
             console.log('lowest rate per bitcoin (USD)', lowest_rate);
             console.log('highest rate per bitcoin (USD)', highest_rate);
@@ -189,9 +201,7 @@ function parseCSV(input) {
 
             console.log('total withdrawal (BTC)', total_withdrawal);
 
-            // _.range(bpi_chart_data.labels.length);
-
-            buildChart(transactions_chart_data);
+            buildChart(buy_chart, withdrawal_chart);
         }
     });
 }
