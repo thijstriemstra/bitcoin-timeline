@@ -1,15 +1,9 @@
 TODO
 ====
 
-- upload various bitstamp json files
-- various events parsed: withdrawal, deposit
-- download various bitstamp json files directly (when
-  user is logged in)
-- parse JSON files
 - store parsed data in database (see
   https://github.com/localForage/localForage)
 - allow user to add labels/stories to events
-- load data into timeline object
 - overlay timeline on top of bitcoin price chart
 
 Charts
