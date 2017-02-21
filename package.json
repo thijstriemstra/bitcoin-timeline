@@ -23,6 +23,7 @@
   "dependencies": {
     "c3": "^0.4.11",
     "chart.js": "^2.5.0",
-    "papaparse": "^4.1.4"
+    "papaparse": "^4.1.4",
+    "underscore": "^1.8.3"
   }
 }
