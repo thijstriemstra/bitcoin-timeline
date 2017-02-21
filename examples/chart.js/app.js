@@ -32,79 +32,67 @@ var transactions = new Transactions();
 
 var bpi_chart_data = {
     labels : [],
-    label : "Bitstamp BPI in USD",
+    label : "Bitstamp BPI",
     data: []
 };
 
 
 var transactions_chart_data = {
     labels : [],
-    label : "Transaction in USD",
+    label : "Market Buy",
     data: [],
     rawData: []
 };
-
 
 function buildChart(data) {
     
     var ctx = document.getElementById("myChart");
     // build graph
     myChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: bpi_chart_data.labels,
             datasets: [{
                label: bpi_chart_data.label,
+               type: 'line',
                data: bpi_chart_data.data,
                strokeColor: "rgba(220,220,220,1)",
                pointColor: "rgba(220,220,220,1)",
                pointStrokeColor: "#fff",
                lineTension: 0.1,
-               backgroundColor: "rgba(75,192,192,0.4)",
-               borderColor: "rgba(75,192,192,1)",
+               backgroundColor: "rgba(213,233,29,0.4)",
+               borderColor: "rgba(213,233,29,1)",
                borderCapStyle: 'butt',
                borderDash: [],
                borderDashOffset: 0.0,
                borderJoinStyle: 'miter',
-               pointBorderColor: "rgba(75,192,192,1)",
                pointBorderWidth: 1,
                pointHoverRadius: 5,
-               pointHoverBackgroundColor: "rgba(75,192,192,1)",
-               pointHoverBorderColor: "rgba(220,220,220,1)",
-               pointHoverBorderWidth: 2,
                pointRadius: 1,
             },
             {
+               type: 'bar',
                label: transactions_chart_data.label,
                data: transactions_chart_data.data,
-               fillColor: "rgba(220,220,220,.2)",
-               pointColor: "rgba(151,187,205,1)",
-               pointStrokeColor: "#fff",
-               lineTension: 0.1,
-               backgroundColor: "rgba(151,187,205,1)",
-               borderColor: "rgba(151,187,205,1)",
-               borderCapStyle: 'butt',
-               borderDash: [],
-               borderDashOffset: 0.0,
-               borderJoinStyle: 'miter',
-               pointBorderColor: "rgba(151,187,205,1)",
-               pointBorderWidth: 1,
-               pointHoverRadius: 5,
-               pointHoverBackgroundColor: "rgba(151,187,205,1)",
-               pointHoverBorderColor: "rgba(220,220,220,1)",
-               pointHoverBorderWidth: 2,
-               pointRadius: 1,
-               spanGaps: true
+               backgroundColor: '#1de9b6',
            }]
          },
          options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
+             title: {
+                 display: true,
+                 text: 'Transaction History'
+             },
+             legend: {
+                 display: true,
+                 labels: {
+                     fontColor: 'rgb(255, 99, 132)'
+                 }
+             },
+             scales: {
+                 xAxes: [{
+                     barThickness: 5
+                 }],
+             }
         }
     });
 }
@@ -123,6 +111,12 @@ function parseBPI(data) {
 
 
 function parseCSV(input) {
+    transactions_chart_data.labels = bpi_chart_data.labels.slice();
+    transactions_chart_data.data = _.range(bpi_chart_data.data.length).map(function ()
+    {
+        return 0;
+    });
+
     //
     Papa.parse(input, {
         worker: true,
@@ -155,8 +149,14 @@ function parseCSV(input) {
 
             if (transaction.get('value') && transaction.isBuy()) {
                 // label, e.g. 2014-07-04
-                transactions_chart_data.labels.push(transaction.get('datestring'));
-                transactions_chart_data.data.push(transaction.get('value'));
+                // find 
+                var theDate = transaction.get('datestring');
+                var index = _.indexOf(transactions_chart_data.labels, theDate);
+                if (index != -1)
+                {
+                    transactions_chart_data.data[index] = transaction.get('value');
+                }
+                
             }
 
             transactions_chart_data.rawData.push(transaction);

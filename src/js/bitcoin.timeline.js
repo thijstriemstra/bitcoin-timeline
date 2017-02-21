@@ -19,9 +19,17 @@ var Transaction = Backbone.Model.extend({
     isBuy: function() {
         return this.get('subType') == 'Buy';
     },
-    
+
+    isSell: function() {
+        return this.get('subType') == 'Sell';
+    },
+
     isWithdrawal: function() {
         return this.get('type') == 'Withdrawal';
+    },
+    
+    isDeposit: function() {
+        return this.get('type') == 'Deposit';
     }
 });
 
@@ -30,13 +38,22 @@ var Transactions = Backbone.Collection.extend({
 
     initialize: function(options)
     {
-        var ratesUrl = 'https://bitpay.com/api/rates';
+        this.getPrice();
+    },
 
-        // get current price
+    getPrice: function(code)
+    {
+        if (code == undefined)
+        {
+            code = 'USD';
+        }
+        var ratesUrl = 'https://bitpay.com/api/rates';
+    
+        // get current USD price
         var here = this;
         getJSON(ratesUrl).then(function(result)
         {
-            here.currentPrice = _.first(_.where(result, {code: "USD"}));
+            here.currentPrice = _.first(_.where(result, {code: code}));
         });
     },
 
