@@ -1,20 +1,3 @@
-var getJSON = function(url) {
-  return new Promise(function(resolve, reject) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('get', url, true);
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-      var status = xhr.status;
-      if (status == 200) {
-        resolve(xhr.response);
-      } else {
-        reject(status);
-      }
-    };
-    xhr.send();
-  });
-};
-
 function handleFileSelect()
 {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
@@ -184,6 +167,8 @@ function parseCSV(input) {
         complete: function(results) {
             console.log('Completed loading transactions CSV.');
 
+            console.log('current price (USD)', transactions.currentPrice.rate);
+
             // Market (Buy)
             var total_spent = transactions.total_spent();
             var total_bought = transactions.total_bought();
@@ -194,6 +179,7 @@ function parseCSV(input) {
 
             console.log('total spent (USD)', total_spent);
             console.log('total bought (BTC)', total_bought);
+            console.log('total bought value with current price (USD)', transactions.currentPrice.rate * total_bought);
             console.log('total fees (USD)', total_fees);
             console.log('lowest rate per bitcoin (USD)', lowest_rate);
             console.log('highest rate per bitcoin (USD)', highest_rate);

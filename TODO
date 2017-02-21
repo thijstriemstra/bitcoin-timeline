@@ -38,6 +38,8 @@ Returns:
 Bitstamp HTTP API
 -----------------
 
+Do not make more than 600 requests per 10 minutes or Bitstamp will ban your IP address.
+
 See https://www.bitstamp.net/api/
 
 - ticker for https://www.bitstamp.net/api/v2/ticker/btcusd/
